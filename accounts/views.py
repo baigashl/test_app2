@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password,check_password
 from accounts.models import User
 from .forms import SingupForm
 from .models import User
-from twilio.rest import Client
+# from twilio.rest import Client
 from django.conf import settings
 from django.http import JsonResponse
 from django.http import HttpResponse
@@ -52,6 +52,7 @@ def signin(request):
                 request.session['user_type'] = user.user_type
                 return redirect('main:dashboard')
         return render(request,'auth/login.html',{'message':'Password is not matched with user email !'})
+
 def signup(request):
     if request.method == "GET":
         form = SingupForm()
@@ -64,6 +65,7 @@ def signup(request):
             signup_item = form.save(commit=False)
             signup_item.password = make_password(signup_item.password)
             signup_item.verify_code = random.randint(1000,9999)
+            print(signup_item.verify_code)
             signup_item.save()
             request.session['temp_email'] = signup_item.useremail
             return redirect('accounts:verify_phone')
